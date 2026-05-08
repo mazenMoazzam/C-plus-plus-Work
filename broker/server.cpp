@@ -1,8 +1,66 @@
 #include <iostream>
 #include <cstring>
+#include <vector>
+#include <thread>
+#include <mutex>
+#include <algorithm>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+
+// Global list of connected clients
+std::vector<int> clients;
+std::mutex clients_mutex;
+
+// Broadcast a message to all connected clients
+void broadcast_message(const std::string& message, int sender_fd) {
+    std::lock_guard<std::mutex> lock(clients_mutex);
+    
+    for (int client_fd : clients) {
+        if (client_fd != sender_fd) { // Don't send back to sender
+            send(client_fd, message.c_str(), message.length(), 0);
+        }
+    }
+}
+
+// Handle a single client connection
+void handle_client(int client_fd) {
+    std::cout << "Client connected (fd: " << client_fd << ")\n";
+    
+    // Add client to the list
+    {
+        std::lock_guard<std::mutex> lock(clients_mutex);
+        clients.push_back(client_fd);
+    }
+    
+    char buffer[1024];
+    while (true) {
+        memset(buffer, 0, sizeof(buffer));
+        int bytes_read = read(client_fd, buffer, sizeof(buffer) - 1);
+        
+        if (bytes_read <= 0) {
+            std::cout << "Client disconnected (fd: " << client_fd << ")\n";
+            break;
+        }
+        
+        std::string message(buffer);
+        std::cout << "Received from client " << client_fd << ": " << message;
+        
+        // Broadcast to all other clients
+        broadcast_message(message, client_fd);
+    }
+    
+    // Remove client from the list
+    {
+        std::lock_guard<std::mutex> lock(clients_mutex);
+        clients.erase(
+            std::remove(clients.begin(), clients.end(), client_fd),
+            clients.end()
+        );
+    }
+    
+    close(client_fd);
+}
 
 int main() {
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -43,22 +101,8 @@ int main() {
             continue;
         }
 
-        std::cout << "Client connected!\n";
-
-        char buffer[1024];
-        while (true) {
-            memset(buffer, 0, sizeof(buffer));
-            int bytes_read = read(client_fd, buffer, sizeof(buffer) - 1);
-            
-            if (bytes_read <= 0) {
-                std::cout << "Client disconnected\n";
-                break;
-            }
-            
-            std::cout << "Received: " << buffer;
-        }
-
-        close(client_fd);
+        // Spawn a new thread to handle this client
+        std::thread(handle_client, client_fd).detach();
     }
 
     close(server_fd);
