@@ -8,26 +8,22 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
-// Global list of connected clients
 std::vector<int> clients;
 std::mutex clients_mutex;
 
-// Broadcast a message to all connected clients
 void broadcast_message(const std::string& message, int sender_fd) {
     std::lock_guard<std::mutex> lock(clients_mutex);
     
     for (int client_fd : clients) {
-        if (client_fd != sender_fd) { // Don't send back to sender
+        if (client_fd != sender_fd) {
             send(client_fd, message.c_str(), message.length(), 0);
         }
     }
 }
 
-// Handle a single client connection
 void handle_client(int client_fd) {
     std::cout << "Client connected (fd: " << client_fd << ")\n";
     
-    // Add client to the list
     {
         std::lock_guard<std::mutex> lock(clients_mutex);
         clients.push_back(client_fd);
@@ -46,11 +42,9 @@ void handle_client(int client_fd) {
         std::string message(buffer);
         std::cout << "Received from client " << client_fd << ": " << message;
         
-        // Broadcast to all other clients
         broadcast_message(message, client_fd);
     }
     
-    // Remove client from the list
     {
         std::lock_guard<std::mutex> lock(clients_mutex);
         clients.erase(
@@ -101,7 +95,6 @@ int main() {
             continue;
         }
 
-        // Spawn a new thread to handle this client
         std::thread(handle_client, client_fd).detach();
     }
 
