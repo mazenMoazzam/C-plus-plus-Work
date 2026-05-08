@@ -2,7 +2,7 @@
 
 A lightweight, high-performance message streaming system built in C++ with TCP networking, multithreading, and real-time broadcasting capabilities.
 
-## 🎯 Overview
+## Overview
 
 This project implements a distributed publish-subscribe messaging system similar to Apache Kafka or RabbitMQ, but simplified and built from scratch in C++. It demonstrates core concepts in:
 
@@ -37,7 +37,7 @@ This project implements a distributed publish-subscribe messaging system similar
 2. **Producer Client** - Sends messages to the broker
 3. **Consumer Client** - Receives messages from the broker in real-time
 
-## 🚀 Features
+## Features
 
 ### Current Implementation (Phase 1)
 
@@ -49,7 +49,7 @@ This project implements a distributed publish-subscribe messaging system similar
 
 ### Planned Features (Future Phases)
 
-- ⏳ **Topic-based Routing** - Subscribe to specific channels (e.g., "payments", "logs")
+- **Topic-based Routing** - Subscribe to specific channels (e.g., "payments", "logs")
 - ⏳ **Message Persistence** - Write messages to disk for replay
 - ⏳ **Message Offsets** - Consumers can request historical messages
 - ⏳ **Protocol Buffers** - Structured message format with headers
@@ -72,7 +72,7 @@ C-plus-plus-Work/
     └── message.h           # (Future) Shared message protocol
 ```
 
-## 🔧 Build & Run
+## Build & Run
 
 ### Prerequisites
 
@@ -116,7 +116,7 @@ cd producer
 
 The consumer(s) will receive messages in real-time!
 
-## 🧪 Testing
+## Testing
 
 ### Test Multiple Consumers
 
@@ -173,7 +173,7 @@ This project demonstrates proficiency in:
 - **Software Architecture** - Designing distributed systems
 - **Infrastructure Engineering** - Building message brokers and queues
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 ### Phase 2: Topics & Subscriptions
 - Add topic-based routing (like Kafka topics)
@@ -210,5 +210,4 @@ This architecture is similar to production systems used for:
 
 ---
 
-**Author:** Mazen Moazzam  
 **Built with:** C++17, POSIX Sockets, Multithreading  
