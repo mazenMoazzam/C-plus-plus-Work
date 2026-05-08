@@ -142,11 +142,11 @@ Client disconnected (fd: 6)
 Connected to broker!
 Waiting for messages... (Press Ctrl+C to exit)
 
-📩 Received: Hello World!
-📩 Received: This is a test message
+  Received: Hello World!
+  Received: This is a test message
 ```
 
-## 💡 Technical Highlights
+## Technical Highlights
 
 ### Networking
 - Low-level POSIX socket API (`socket`, `bind`, `listen`, `accept`)
@@ -163,7 +163,7 @@ Waiting for messages... (Press Ctrl+C to exit)
 - Minimal memory copying
 - Scalable to dozens of concurrent connections
 
-## 🎓 Learning Outcomes
+## Learning Outcomes
 
 This project demonstrates proficiency in:
 
@@ -191,7 +191,7 @@ This project demonstrates proficiency in:
 - Compression and batching
 - Monitoring dashboard (web UI)
 
-## 📚 Use Cases
+## Use Cases
 
 This architecture is similar to production systems used for:
 
@@ -201,7 +201,7 @@ This architecture is similar to production systems used for:
 - **Real-time Analytics** - Processing streams of events
 
 
-## 🔗 Related Technologies
+## Related Technologies
 
 - **Apache Kafka** - Distributed event streaming platform
 - **RabbitMQ** - Message broker with AMQP protocol
