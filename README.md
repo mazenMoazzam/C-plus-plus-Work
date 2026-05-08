@@ -12,7 +12,7 @@ This project implements a distributed publish-subscribe messaging system similar
 - **Message broadcasting** in real-time
 - **Thread-safe data structures** with mutexes
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌──────────┐                  ┌──────────┐
