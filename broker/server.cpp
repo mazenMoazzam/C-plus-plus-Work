@@ -33,27 +33,34 @@ int main() {
 
     std::cout << "Broker listening on port 9092...\n";
 
-    sockaddr_in client_addr{};
-    socklen_t client_len = sizeof(client_addr);
-    int client_fd = accept(server_fd, (sockaddr*)&client_addr, &client_len);
-    
-    if (client_fd < 0) {
-        std::cerr << "Accept failed\n";
-        close(server_fd);
-        return 1;
+    while (true) {
+        sockaddr_in client_addr{};
+        socklen_t client_len = sizeof(client_addr);
+        int client_fd = accept(server_fd, (sockaddr*)&client_addr, &client_len);
+        
+        if (client_fd < 0) {
+            std::cerr << "Accept failed\n";
+            continue;
+        }
+
+        std::cout << "Client connected!\n";
+
+        char buffer[1024];
+        while (true) {
+            memset(buffer, 0, sizeof(buffer));
+            int bytes_read = read(client_fd, buffer, sizeof(buffer) - 1);
+            
+            if (bytes_read <= 0) {
+                std::cout << "Client disconnected\n";
+                break;
+            }
+            
+            std::cout << "Received: " << buffer;
+        }
+
+        close(client_fd);
     }
 
-    std::cout << "Client connected!\n";
-
-    char buffer[1024] = {0};
-    int bytes_read = read(client_fd, buffer, sizeof(buffer));
-    
-    if (bytes_read > 0) {
-        std::cout << "Received: " << buffer << "\n";
-    }
-
-    close(client_fd);
     close(server_fd);
-
     return 0;
 }
