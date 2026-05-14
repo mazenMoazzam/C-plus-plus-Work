@@ -4,7 +4,16 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cerr << "Usage: ./consumerClient <topic>\n";
+        std::cerr << "Example: ./consumerClient payments\n";
+        std::cerr << "Example: ./consumerClient logs\n";
+        return 1;
+    }
+
+    std::string topic = argv[1];
+
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1) {
         std::cerr << "Failed to create socket\n";
@@ -28,6 +37,12 @@ int main() {
     }
 
     std::cout << "Connected to broker!\n";
+    
+    // Send subscription request
+    std::string subscribe_msg = "SUBSCRIBE:" + topic + "\n";
+    send(sock, subscribe_msg.c_str(), subscribe_msg.length(), 0);
+    
+    std::cout << "📥 Subscribed to topic: '" << topic << "'\n";
     std::cout << "Waiting for messages... (Press Ctrl+C to exit)\n\n";
 
     char buffer[1024];
@@ -40,7 +55,7 @@ int main() {
             break;
         }
         
-        std::cout << "📩 Received: " << buffer;
+        std::cout << "📩 " << buffer;
     }
 
     close(sock);
